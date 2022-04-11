@@ -12,29 +12,53 @@ pool:
 variables:
   buildConfiguration: 'Release'
 stages: 
-  
-  # source stage
-  - stage: Source
-    jobs:
-    - job: 
-  
-  
+    
   # build stage
   - stage: Build
     jobs:
     - job: Build
       steps:
+      - task: UseDotNet@2
+        inputs:
+          version: '5.0.x'
+          includePreviewVersions: true # required for preview versions
+      - task: UseDotNet@2
+        inputs:
+          version: '3.0.x'
+          packageType: runtime
+      - task: UseDotNet@2
+        displayName: 'Install .NET Core SDK'
+        inputs:
+          version: 5.0.x
+          includePreviewVersions: true # required for preview versions
+          performMultiLevelLookUp: true
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: restore
+          feedsToUse: select
+          vstsFeed: 'my-vsts-feed'
+        
+      
+      # The following task is building the project.
       - task: DotNetCoreCLI@2
         inputs:
           command: build
           projects: '**/*.csproj'
           arguments: '--configuration $(buildConfiguration)'
         displayName: 'dotnet build $(buildConfiguration)'
+      
+      # The following task is testing the project (unit test using a test fremework) 11.04.2022
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: test
+          projects: '**/*Tests/*.csproj'
+          arguments: '--configuration $(buildConfiguration)'
+  
   
   # test stage
   - stage: Test
     jobs:
-    - job: Build
+    - job: Test
     - job: Run
 
   # release stage
