@@ -59,6 +59,29 @@ stages:
   - stage: Test
     jobs:
     - job: Test
+      steps:
+      # collect code coverage with coverlet
+        - task: UseDotNet@2
+          inputs:
+            version: '5.0.x'
+            includePreviewVersions: true # required for preview versions
+        - task: DotNetCoreCLI@2
+          displayName: 'dotnet build'
+          inputs:
+            command: build
+            configuration: $(buildConfiguration)
+        - task: DotNetCoreCLI@2
+          displayName: 'dotnet test'
+          inputs:
+           command: test
+           arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura'
+           publishTestResults: true
+           projects: 'MyTestLibraby' # we need to update with our test project directory name.
+        - task: PublishCodeCoverageResults@1
+          displayName: 'Publish Code Coverage Report'
+          inputs:
+            codeCoverageTool: Cobertura
+            summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
     - job: Run
 
   # release stage
@@ -69,4 +92,4 @@ stages:
   # deploy stage
   - stage: Deploy
     jobs:
-    - job: 
+    - job: # package and deliver your code.
