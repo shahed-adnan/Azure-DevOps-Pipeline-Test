@@ -5,6 +5,7 @@
 
 trigger:
 - master
+- Feature
 
 pool:
   vmImage: ubuntu-latest
