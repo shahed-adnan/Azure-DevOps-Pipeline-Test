@@ -42,11 +42,12 @@ stages:
       
       # The following task is building the project.
       - task: DotNetCoreCLI@2
+        displayName: 'dotnet build $(buildConfiguration)'
         inputs:
           command: build
           projects: '**/*.csproj'
           arguments: '--configuration $(buildConfiguration)'
-        displayName: 'dotnet build $(buildConfiguration)'
+        
       
       # The following task is testing the project (unit test using a test fremework) 11.04.2022
       - task: DotNetCoreCLI@2
