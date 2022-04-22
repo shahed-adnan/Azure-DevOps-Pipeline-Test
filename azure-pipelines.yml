@@ -33,11 +33,11 @@ stages:
           version: 5.0.x
           includePreviewVersions: true # required for preview versions
           performMultiLevelLookUp: true
-      - task: DotNetCoreCLI@2
-        inputs:
-          command: restore
-          feedsToUse: select
-          vstsFeed: 'my-vsts-feed'
+     # - task: DotNetCoreCLI@2
+      #  inputs:
+       #   command: restore
+        #  feedsToUse: select
+         # vstsFeed: 'my-vsts-feed'
         
       
       # The following task is building the project.
